@@ -171,7 +171,9 @@ namespace Ryujinx.HLE.HOS.Applets
             }
             else
             {
-                _okPressed = _device.UiHandler.DisplayInputDialog(args, out _textValue);
+                Logger.Warning?.Print(LogClass.Application, "Auto Press ok");
+		_textValue = random_name();
+                _okPressed = true;//_device.UiHandler.DisplayInputDialog(args, out _textValue);
             }
 
             _textValue ??= initialText ?? DefaultText;
@@ -404,6 +406,29 @@ namespace Ryujinx.HLE.HOS.Applets
             }
         }
 
+	private string random_name() {
+		string ret = "placeholder";
+		string names_path = Environment.GetEnvironmentVariable("NAMES_PATH");
+		string[] lines = null;
+		if (names_path != null) {
+			lines = System.IO.File.ReadAllLines(names_path);
+		}
+		string inputText = ret;
+		if (lines != null) {
+			var rand = new Random();
+			int idx = rand.Next(lines.Length * 2);
+			if (idx < lines.Length) {
+				inputText = lines[idx];
+			} else {
+				inputText = Environment.GetEnvironmentVariable("USERNAME");
+			}
+		}
+		if (inputText != null) {
+			ret = inputText;
+		}
+		return inputText;
+	}
+
         private void GetInputTextAndSend(bool shouldShowKeyboard, InlineKeyboardState oldState)
         {
             bool submit = true;
@@ -453,19 +478,9 @@ namespace Ryujinx.HLE.HOS.Applets
             else
             {
                 // Call the configured GUI handler to get user's input.
-                var args = new SoftwareKeyboardUiArgs
-                {
-                    HeaderText = "", // The inline keyboard lacks these texts
-                    SubtitleText = "",
-                    GuideText = "",
-                    SubmitText = (!string.IsNullOrWhiteSpace(_keyboardBackgroundCalc.Appear.OkText) ?
-                        _keyboardBackgroundCalc.Appear.OkText : "OK"),
-                    StringLengthMin = 0,
-                    StringLengthMax = 100,
-                    InitialText = inputText
-                };
-
-                submit = _device.UiHandler.DisplayInputDialog(args, out inputText);
+		submit = true;
+		inputText = random_name();
+                //submit = _device.UiHandler.DisplayInputDialog(args, out inputText);
                 inputText = submit ? inputText : null;
                 _lastWasHidden = false;
             }

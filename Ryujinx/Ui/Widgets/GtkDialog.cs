@@ -53,7 +53,7 @@ namespace Ryujinx.Ui.Widgets
         {
             Logger.Error?.Print(LogClass.Application, errorMessage);
 
-            new GtkDialog("Ryujinx - Error", "Ryujinx has encountered an error", errorMessage, MessageType.Error).Run();
+            //new GtkDialog("Ryujinx - Error", "Ryujinx has encountered an error", errorMessage, MessageType.Error).Run();
         }
 
         internal static MessageDialog CreateConfirmationDialog(string mainText, string secondaryText = "")
@@ -107,7 +107,8 @@ namespace Ryujinx.Ui.Widgets
 
         internal static bool CreateExitDialog()
         {
-            return CreateChoiceDialog("Ryujinx - Exit", "Are you sure you want to close Ryujinx?", "All unsaved data will be lost!");
+            return true;
+            //return CreateChoiceDialog("Ryujinx - Exit", "Are you sure you want to close Ryujinx?", "All unsaved data will be lost!");
         }
     }
 }
